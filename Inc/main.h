@@ -47,20 +47,20 @@
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-#define A3_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET)		//管冷 
-#define A3_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET)	//管冷
-#define A4_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)		//風冷
-#define A4_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)	//風冷
-#define A5_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET)		//警報
-#define A5_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET)	//警報
-#define A6_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET)		//?����?風�??
-#define A6_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET)	//?����?風�??
-#define A7_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET)		//?����?風�??
-#define A7_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET)	//?����?風�??
-#define A8_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)		//壓縮�?
-#define A8_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)	//壓縮�?
-#define A11_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET)		//?��???
-#define A11_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET)	//?��???
+#define A3_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET)		//?? 
+#define A3_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET)	//??
+#define A4_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)		//??
+#define A4_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)	//??
+#define A5_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET)		//??
+#define A5_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET)	//??
+#define A6_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET)		//??????????
+#define A6_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET)	//??????????
+#define A7_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET)		//??????????
+#define A7_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET)	//??????????
+#define A8_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)		//????
+#define A8_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)	//????
+#define A11_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET)		//??????
+#define A11_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET)	//??????
 #define GPIO_B(num) HAL_GPIO_ReadPin(GPIOB, num)
 
 #define closed 0
@@ -96,43 +96,43 @@ typedef struct _status  // 1 = Wrong, 0 = Normal.
 {
   uint8_t Door;     //??
   uint8_t _Door;    //Last status
-  uint8_t HV;       //高�??
-  uint8_t LV;       //低�??
-  uint8_t Oil;      //油�??
-  uint8_t Comp_OVP; //壓縮機�?��??
+  uint8_t HV;       //????
+  uint8_t LV;       //????
+  uint8_t Oil;      //????
+  uint8_t Comp_OVP; //?????????
   uint8_t SRP_Swt;  //SRP
 }Status_HandleTypeDef;
 
 typedef struct _timCNT      //Unit: Minute
 {
-  unsigned long fan_CNT;         //風冷計�??
+  unsigned long fan_CNT;         //??????
   unsigned long fan_CNT_TRIG;
 
-  unsigned long tube_CNT;        //管冷計�??
+  unsigned long tube_CNT;        //??????
   unsigned long tube_CNT_TRIG;
 
-  unsigned long defrost_cyc_CNT; //?��??��?��?��?��??
+  unsigned long defrost_cyc_CNT; //??????????????????
   unsigned long defrost_cyc_CNT_TRIG;
 
-  unsigned long defrost_CNT;     //?��??��?��??
+  unsigned long defrost_CNT;     //????????????
   unsigned long defrost_CNT_TRIG;
 
-  unsigned long drip_CNT;        //滴水計�??
+  unsigned long drip_CNT;        //??????
   unsigned long drip_CNT_TRIG;
 
-  unsigned long house_temp_H_CNT;  //高溫??續觸?��計�??
+  unsigned long house_temp_H_CNT;  //?????????????
   unsigned long house_temp_H_CNT_TRIG;
 
-  unsigned long house_temp_L_CNT;  //低溫??續觸?��計�??
+  unsigned long house_temp_L_CNT;  //?????????????
   unsigned long house_temp_L_CNT_TRIG;
 
-  unsigned long refri_temp_H_CNT;  //?��??��?�溫??續觸?��計�??
+  unsigned long refri_temp_H_CNT;  //?????????????????????
   unsigned long refri_temp_H_CNT_TRIG;
 
-  unsigned long refri_temp_L_CNT;  //?��??��?�溫??續觸?��計�??
+  unsigned long refri_temp_L_CNT;  //?????????????????????
   unsigned long refri_temp_L_CNT_TRIG;
   
-  unsigned long door_open_del_CNT; //??��?延遲??��?��?�縮�?
+  unsigned long door_open_del_CNT; //???????????????????
   unsigned long door_open_del_CNT_TRIG;
 
   unsigned long cmp_alarm_blind_CNT;
