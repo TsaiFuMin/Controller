@@ -169,7 +169,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-    Get_Data(house_temp);
+    
 		
     IO_CHK_Routine();       //DO NOT EDIT
 
@@ -430,6 +430,8 @@ void CMP_CHK_Routine(void){
   uint8_t alarm_sta;
   alarm_sta=IO_Status.Comp_OVP&&IO_Status.LV&&IO_Status.HV&&IO_Status.Oil;
 
+  //Temporary
+  Temp.Read_House_Temp_int=0;
   static uint8_t house_temp_cmp_sta;
   if(Temp.Read_House_Temp_int<Temp.house_temp_int){
     house_temp_cmp_sta=0; //0 = turn off comp
@@ -463,6 +465,8 @@ void CMP_CHK_Routine(void){
   }
 
 }
+
+
 
 void Refri_CHK_Routine(void){
 
