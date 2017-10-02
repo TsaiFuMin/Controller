@@ -182,10 +182,10 @@ int main(void)
     Refri_CHK_Routine();
 
     SRP_CHK_Routine();
-
+	}
 	
   /* USER CODE END 3 */
-	}
+
 }
 
 /** System Clock Configuration
@@ -634,12 +634,17 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
    */
   if(hadc->Instance==hadc1.Instance){
     uint32_t ch[6];
+		float ch1,ch2,ch3;
     ch[0]=ADC_Buf[0];
     ch[1]=ADC_Buf[1];
     ch[2]=ADC_Buf[2];
 		ch[3]=ADC_Buf[3];
 		ch[4]=ADC_Buf[4];
 		ch[5]=ADC_Buf[5];
+		
+		ch1=((float)(ch[0]+ch[3])/(float)2.0);
+		ch2=((float)(ch[1]+ch[4])/(float)2.0);
+		ch3=((float)(ch[2]+ch[5])/(float)2.0);
   }
 }
 

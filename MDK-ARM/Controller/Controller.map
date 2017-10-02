@@ -1868,7 +1868,7 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-      1904        110          0         27        436       9345   main.o
+      1904        110          0         27        436       9385   main.o
         36          8        236          0       1024        780   startup_stm32f103xb.o
        132         22          0          4          0       3507   stm32f1xx_hal.o
       1534         62          0          0          0       9751   stm32f1xx_hal_adc.o
@@ -1876,7 +1876,7 @@ Image component sizes
        228         14          0          0          0      27193   stm32f1xx_hal_cortex.o
        594         32          0          0          0       3495   stm32f1xx_hal_dma.o
        464         36          0          0          0       3411   stm32f1xx_hal_gpio.o
-       440         78          0          0          0     456850   stm32f1xx_hal_msp.o
+       440         78          0          0          0     456918   stm32f1xx_hal_msp.o
       1296        104          0          0          0       5472   stm32f1xx_hal_rcc.o
        236         12          0          0          0       1344   stm32f1xx_hal_rcc_ex.o
        902         14          0          0          0       9623   stm32f1xx_hal_tim.o
@@ -1886,7 +1886,7 @@ Image component sizes
         72         16         24          4          0       1083   system_stm32f1xx.o
 
     ----------------------------------------------------------------------
-      9196        570        292         36       1464     545119   Object Totals
+      9196        570        292         36       1464     545227   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         14          0          0          1          4          0   (incl. Padding)
 
@@ -1951,8 +1951,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     12244        640        428         40       1464     541803   Grand Totals
-     12244        640        428         40       1464     541803   ELF Image Totals
+     12244        640        428         40       1464     541911   Grand Totals
+     12244        640        428         40       1464     541911   ELF Image Totals
      12244        640        428         40          0          0   ROM Totals
 
 ==============================================================================

@@ -90,7 +90,7 @@
 #define tube_cooling_time           270
 #define boot_delay                  285
 #define door_delay                  300
-
+#define Beta_of_NTC                 315
 
 typedef struct _status  // 1 = Wrong, 0 = Normal.
 {
@@ -192,6 +192,11 @@ typedef struct _cmp_last_sta
 {
   uint8_t _cmpsta;
 }Alarm_Blind_HandleTypeDef;
+
+typedef struct _NTC_info
+{
+  uint32_t Beta;
+}NTC_HandleTypeDef;
 
 /* USER CODE END Private defines */
 
