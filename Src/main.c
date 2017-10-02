@@ -84,6 +84,9 @@ Alarm_Blind_HandleTypeDef CMP;
 unsigned char _rept[5]="rept ";
 unsigned char _null[3]={255,255,255};
 unsigned char _leng[2]=",5";
+
+uint32_t ADC_Buf[3];
+
 #define cmd_rept HAL_UART_Transmit(&huart1, _rept, 5, 0xff)
 #define cmd_leng HAL_UART_Transmit(&huart1, _leng, 2, 0xff)
 #define cmd_end HAL_UART_Transmit(&huart1, _null, 3, 0xff)
@@ -142,7 +145,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
 
-  /* USER CODE BEGIN 2 */
+  /* USER CODE BEGIN 2 */  
   door_open_del_CNT_Sta=idle;
 
   SRP_Routine_Sta=idle; //Reset SRP switch
@@ -157,8 +160,8 @@ int main(void)
   Alarm_Blind_CNT_Sta=idle;
   /****************Reserved for boot delay**********************/
 
-	HAL_TIM_Base_Start_IT(&htim2);
-
+  HAL_TIM_Base_Start_IT(&htim2);
+	HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -619,6 +622,21 @@ void Get_Data(uint16_t addr){
     CNT.door_open_del_CNT_TRIG=atol((char*)receive_buf)*60;
   }
 
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hadc);
+  /* NOTE : This function should not be modified. When the callback is needed,
+            function HAL_ADC_ConvCpltCallback must be implemented in the user file.
+   */
+  if(hadc->Instance==hadc1.Instance){
+    uint32_t _ch1,_ch2,_ch3;
+    _ch1=ADC_Buf[0];
+    _ch2=ADC_Buf[1];
+    _ch3=ADC_Buf[2];
+  }
 }
 
 /* USER CODE END 4 */
