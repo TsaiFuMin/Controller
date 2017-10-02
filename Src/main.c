@@ -85,7 +85,7 @@ unsigned char _rept[5]="rept ";
 unsigned char _null[3]={255,255,255};
 unsigned char _leng[2]=",5";
 
-uint32_t ADC_Buf[3];
+uint32_t ADC_Buf[6];
 
 #define cmd_rept HAL_UART_Transmit(&huart1, _rept, 5, 0xff)
 #define cmd_leng HAL_UART_Transmit(&huart1, _leng, 2, 0xff)
@@ -145,7 +145,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
 
-  /* USER CODE BEGIN 2 */  
+  /* USER CODE BEGIN 2 */
   door_open_del_CNT_Sta=idle;
 
   SRP_Routine_Sta=idle; //Reset SRP switch
@@ -161,7 +161,8 @@ int main(void)
   /****************Reserved for boot delay**********************/
 
   HAL_TIM_Base_Start_IT(&htim2);
-	HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 3);
+	HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 6);
+	HAL_ADC_Start(&hadc1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -267,7 +268,7 @@ static void MX_ADC1_Init(void)
     */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -632,10 +633,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
             function HAL_ADC_ConvCpltCallback must be implemented in the user file.
    */
   if(hadc->Instance==hadc1.Instance){
-    uint32_t _ch1,_ch2,_ch3;
-    _ch1=ADC_Buf[0];
-    _ch2=ADC_Buf[1];
-    _ch3=ADC_Buf[2];
+    uint32_t ch[6];
+    ch[0]=ADC_Buf[0];
+    ch[1]=ADC_Buf[1];
+    ch[2]=ADC_Buf[2];
+		ch[3]=ADC_Buf[3];
+		ch[4]=ADC_Buf[4];
+		ch[5]=ADC_Buf[5];
   }
 }
 

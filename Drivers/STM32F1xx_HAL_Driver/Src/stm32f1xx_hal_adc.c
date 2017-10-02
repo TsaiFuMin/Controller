@@ -1608,7 +1608,14 @@ void HAL_ADC_IRQHandler(ADC_HandleTypeDef* hadc)
   * @param  hadc: ADC handle
   * @retval None
   */
-__weak 
+__weak void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hadc);
+  /* NOTE : This function should not be modified. When the callback is needed,
+            function HAL_ADC_ConvCpltCallback must be implemented in the user file.
+   */
+}
 
 /**
   * @brief  Conversion DMA half-transfer callback in non blocking mode 
