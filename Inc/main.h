@@ -90,7 +90,14 @@
 #define tube_cooling_time           270
 #define boot_delay                  285
 #define door_delay                  300
+
 #define Beta_of_NTC                 315
+#define EVP_Temp_offset             330
+#define House_Temp_offset           345
+#define Refri_Temp_offset           360
+#define EVP_Percent_offset          375
+#define House_Percent_offset          390
+#define Refri_Percent_offset          405
 
 typedef struct _status  // 1 = Wrong, 0 = Normal.
 {
@@ -195,7 +202,18 @@ typedef struct _cmp_last_sta
 
 typedef struct _NTC_info
 {
-  uint32_t Beta;
+  uint32_t Beta;                  //used
+  float EVP_Temp_offset_flt;      //used
+  float House_Temp_offset_flt;    //used
+  float Refri_Temp_offset_flt;    //used
+  float EVP_Percent_offset_flt;   //used
+  float House_Percent_offset_flt; //used
+  float Refri_Percent_offset_flt; //used
+
+  int16_t EVP_Temp_offset_int;
+  int16_t House_Temp_offset_int;
+  int16_t Refri_Temp_offset_int;
+
 }NTC_HandleTypeDef;
 
 /* USER CODE END Private defines */

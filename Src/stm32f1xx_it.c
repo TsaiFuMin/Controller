@@ -62,6 +62,7 @@ extern CNT_Sta_HandleTypeDef
                   
                   SRP_Routine_Sta;
 extern Alarm_Blind_HandleTypeDef CMP;                  
+extern NTC_HandleTypeDef NTC;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -254,6 +255,9 @@ void TIM2_IRQHandler(void)
   //**********************************
   //**********************************
   //*****USER FUNCTION START HERE*****
+	
+
+
   if(fan_CNT_Sta == running)
   {
     CNT.fan_CNT++;

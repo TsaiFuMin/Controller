@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -80,12 +81,13 @@ CNT_Sta_HandleTypeDef
                   Alarm_Blind_CNT_Sta,
 
                   SRP_Routine_Sta;
-Alarm_Blind_HandleTypeDef CMP;	
+Alarm_Blind_HandleTypeDef CMP;
+NTC_HandleTypeDef NTC;	
 unsigned char _rept[5]="rept ";
 unsigned char _null[3]={255,255,255};
 unsigned char _leng[2]=",5";
 
-uint32_t ADC_Buf[6];
+uint32_t ADC_Buf[6];  //For ADC DMA
 
 #define cmd_rept HAL_UART_Transmit(&huart1, _rept, 5, 0xff)
 #define cmd_leng HAL_UART_Transmit(&huart1, _leng, 2, 0xff)
@@ -147,7 +149,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   door_open_del_CNT_Sta=idle;
-
+	
   SRP_Routine_Sta=idle; //Reset SRP switch
 	
 	fan_CNT_Sta=idle;
@@ -173,7 +175,14 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-    
+		
+    Get_Data(EVP_Temp_offset);
+    Get_Data(House_Temp_offset);
+    Get_Data(Refri_Temp_offset);
+
+    Get_Data(EVP_Percent_offset);
+    Get_Data(House_Percent_offset);
+    Get_Data(Refri_Percent_offset);
 		
     IO_CHK_Routine();       //DO NOT EDIT
 
@@ -621,6 +630,23 @@ void Get_Data(uint16_t addr){
     
   }else if(addr==door_delay){
     CNT.door_open_del_CNT_TRIG=atol((char*)receive_buf)*60;
+  }else if(addr==Beta_of_NTC){
+    NTC.Beta=atol((char*)receive_buf);
+  }else if(addr==EVP_Temp_offset){
+    NTC.EVP_Temp_offset_flt=atof((char*)receive_buf);
+    NTC.EVP_Temp_offset_int=(int16_t)(NTC.EVP_Temp_offset_flt*(float)10.0);
+  }else if(addr==House_Temp_offset){
+    NTC.House_Temp_offset_flt=atof((char*)receive_buf);
+    NTC.House_Temp_offset_int=(int16_t)(NTC.House_Temp_offset_flt*(float)10.0);
+  }else if(addr==Refri_Temp_offset){
+    NTC.Refri_Temp_offset_flt=atof((char*)receive_buf);
+    NTC.Refri_Temp_offset_int=(int16_t)(NTC.Refri_Temp_offset_flt*(float)10.0);
+  }else if(addr==EVP_Percent_offset){
+    NTC.EVP_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
+  }else if(addr==House_Percent_offset){
+    NTC.House_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
+  }else if(addr==Refri_Percent_offset){
+    NTC.Refri_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
   }
 
 }
@@ -633,8 +659,20 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
             function HAL_ADC_ConvCpltCallback must be implemented in the user file.
    */
   if(hadc->Instance==hadc1.Instance){
+    
+		Get_Data(Beta_of_NTC);
+
     uint32_t ch[6];
-		float ch1,ch2,ch3;
+    float ch1_val,ch2_val,ch3_val;
+    float ch1_volt,ch2_volt,ch3_volt;
+
+    float ch1_Up_R_Volt,ch2_Up_R_Volt,ch3_Up_R_Volt;
+    float ch1_I,ch2_I,ch3_I;
+
+    float ch1_R,ch2_R,ch3_R;
+
+    float ch1_temp,ch2_temp,ch3_temp;
+
     ch[0]=ADC_Buf[0];
     ch[1]=ADC_Buf[1];
     ch[2]=ADC_Buf[2];
@@ -642,9 +680,41 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 		ch[4]=ADC_Buf[4];
 		ch[5]=ADC_Buf[5];
 		
-		ch1=((float)(ch[0]+ch[3])/(float)2.0);
-		ch2=((float)(ch[1]+ch[4])/(float)2.0);
-		ch3=((float)(ch[2]+ch[5])/(float)2.0);
+		ch1_val=((float)(ch[0]+ch[3])/(float)2.0);
+		ch2_val=((float)(ch[1]+ch[4])/(float)2.0);
+    ch3_val=((float)(ch[2]+ch[5])/(float)2.0);
+    
+    ch1_volt=(ch1_val/(float)4095)*(float)3.3;
+    ch2_volt=(ch2_val/(float)4095)*(float)3.3;
+    ch3_volt=(ch3_val/(float)4095)*(float)3.3;
+
+    ch1_Up_R_Volt=(float)3.3-ch1_volt;
+    ch2_Up_R_Volt=(float)3.3-ch2_volt;
+    ch3_Up_R_Volt=(float)3.3-ch3_volt;
+
+    ch1_I=(ch1_Up_R_Volt/(float)1000.0)*NTC.Refri_Percent_offset_flt;
+    ch2_I=(ch2_Up_R_Volt/(float)1000.0)*NTC.EVP_Percent_offset_flt;
+    ch3_I=(ch3_Up_R_Volt/(float)1000.0)*NTC.House_Percent_offset_flt;
+
+    ch1_R=ch1_volt/ch1_I;
+    ch2_R=ch2_volt/ch2_I;
+    ch3_R=ch3_volt/ch3_I;
+		
+    ch1_temp = ((float)NTC.Beta/((log(ch1_R/(float)10000.0))+(NTC.Beta/(float)298.15)))-(float)273.15;
+    ch2_temp = ((float)NTC.Beta/((log(ch2_R/(float)10000.0))+(NTC.Beta/(float)298.15)))-(float)273.15;
+    ch3_temp = ((float)NTC.Beta/((log(ch3_R/(float)10000.0))+(NTC.Beta/(float)298.15)))-(float)273.15;
+
+    ch1_temp=(int16_t)(ch1_temp*(float)10.0);
+    Temp.Read_Refri_Temp_int=(int16_t)ch1_temp;
+    Temp.Read_Refri_Temp_flt=(float)Temp.Read_Refri_Temp_int/(float)10.0;
+    
+    ch2_temp=(int16_t)(ch2_temp*(float)10.0);
+    Temp.Read_EVAP_Temp_int=(int16_t)ch2_temp;
+    Temp.Read_EVAP_Temp_flt=(float)Temp.Read_EVAP_Temp_int/(float)10.0;
+    
+    ch3_temp=(int16_t)(ch3_temp*(float)10.0);
+    Temp.Read_House_Temp_int=(int16_t)ch3_temp;
+		Temp.Read_House_Temp_flt=(float)Temp.Read_House_Temp_int/(float)10.0;
   }
 }
 
