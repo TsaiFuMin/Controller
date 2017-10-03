@@ -163,8 +163,7 @@ int main(void)
   /****************Reserved for boot delay**********************/
 
   HAL_TIM_Base_Start_IT(&htim2);
-	HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 6);
-	HAL_ADC_Start(&hadc1);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -174,15 +173,16 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
-		
+		Get_Data(Beta_of_NTC);	
     Get_Data(EVP_Temp_offset);
     Get_Data(House_Temp_offset);
     Get_Data(Refri_Temp_offset);
-
     Get_Data(EVP_Percent_offset);
     Get_Data(House_Percent_offset);
-    Get_Data(Refri_Percent_offset);
+		Get_Data(Refri_Percent_offset);
+		HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 6);
+		HAL_ADC_Start(&hadc1);
+		
 		
     IO_CHK_Routine();       //DO NOT EDIT
 
@@ -277,7 +277,7 @@ static void MX_ADC1_Init(void)
     */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -660,7 +660,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
    */
   if(hadc->Instance==hadc1.Instance){
     
-		Get_Data(Beta_of_NTC);
+		
 
     uint32_t ch[6];
     float ch1_val,ch2_val,ch3_val;
@@ -679,6 +679,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 		ch[3]=ADC_Buf[3];
 		ch[4]=ADC_Buf[4];
 		ch[5]=ADC_Buf[5];
+		
+		HAL_ADC_Stop_DMA(&hadc1);
+		HAL_ADC_Stop(&hadc1);
 		
 		ch1_val=((float)(ch[0]+ch[3])/(float)2.0);
 		ch2_val=((float)(ch[1]+ch[4])/(float)2.0);
@@ -705,15 +708,15 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     ch3_temp = ((float)NTC.Beta/((log(ch3_R/(float)10000.0))+(NTC.Beta/(float)298.15)))-(float)273.15;
 
     ch1_temp=(int16_t)(ch1_temp*(float)10.0);
-    Temp.Read_Refri_Temp_int=(int16_t)ch1_temp;
+    Temp.Read_Refri_Temp_int=(int16_t)ch1_temp+(NTC.Refri_Temp_offset_int);
     Temp.Read_Refri_Temp_flt=(float)Temp.Read_Refri_Temp_int/(float)10.0;
     
     ch2_temp=(int16_t)(ch2_temp*(float)10.0);
-    Temp.Read_EVAP_Temp_int=(int16_t)ch2_temp;
+    Temp.Read_EVAP_Temp_int=(int16_t)ch2_temp+(NTC.Refri_Temp_offset_int);
     Temp.Read_EVAP_Temp_flt=(float)Temp.Read_EVAP_Temp_int/(float)10.0;
     
     ch3_temp=(int16_t)(ch3_temp*(float)10.0);
-    Temp.Read_House_Temp_int=(int16_t)ch3_temp;
+    Temp.Read_House_Temp_int=(int16_t)ch3_temp+(NTC.Refri_Temp_offset_int);
 		Temp.Read_House_Temp_flt=(float)Temp.Read_House_Temp_int/(float)10.0;
   }
 }

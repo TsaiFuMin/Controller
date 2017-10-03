@@ -96,8 +96,8 @@
 #define House_Temp_offset           345
 #define Refri_Temp_offset           360
 #define EVP_Percent_offset          375
-#define House_Percent_offset          390
-#define Refri_Percent_offset          405
+#define House_Percent_offset        390
+#define Refri_Percent_offset        405
 
 typedef struct _status  // 1 = Wrong, 0 = Normal.
 {
