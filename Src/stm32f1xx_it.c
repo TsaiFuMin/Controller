@@ -60,7 +60,8 @@ extern CNT_Sta_HandleTypeDef
                   
                   Alarm_Blind_CNT_Sta,
                   
-                  SRP_Routine_Sta;
+                  SRP_Routine_Sta,
+                  Boot_CNT_Sta;
 extern Alarm_Blind_HandleTypeDef CMP;                  
 extern NTC_HandleTypeDef NTC;
 /* USER CODE END 0 */
@@ -255,8 +256,10 @@ void TIM2_IRQHandler(void)
   //**********************************
   //**********************************
   //*****USER FUNCTION START HERE*****
-	
-
+	static uint16_t tick;
+  
+ 
+ 
 
   if(fan_CNT_Sta == running)
   {
@@ -335,7 +338,17 @@ void TIM2_IRQHandler(void)
       CNT.cmp_alarm_blind_CNT=0;
       Alarm_Blind_CNT_Sta=idle;
     }    
-	}
+  }
+  
+  if(Boot_CNT_Sta==running)
+  {
+    CNT.boot_del_CNT++;
+    if(CNT.boot_del_CNT==CNT.boot_del_CNT_TRIG)
+    {
+      CNT.boot_del_CNT_TRIG=0;
+      Boot_CNT_Sta=idle;
+    }    
+  } 
   //*****USER FUNCTION END HERE*******
   //**********************************
   //**********************************

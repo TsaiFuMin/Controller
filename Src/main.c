@@ -80,7 +80,8 @@ CNT_Sta_HandleTypeDef
                   
                   Alarm_Blind_CNT_Sta,
 
-                  SRP_Routine_Sta;
+                  SRP_Routine_Sta,
+                  Boot_CNT_Sta;
 Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
 unsigned char _rept[5]="rept ";
@@ -110,6 +111,7 @@ void CMP_CHK_Routine(void); //Always run after "IO_CHK_Routine()"
 void Alarm_CHK_Routine(void);
 void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
+void ADC_Read_Data(void);
 void Get_Data(uint16_t addr);
 /* USER CODE END PFP */
 
@@ -148,22 +150,33 @@ int main(void)
   MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
+  Boot_CNT_Sta=idle;
   door_open_del_CNT_Sta=idle;
-	
   SRP_Routine_Sta=idle; //Reset SRP switch
-	
 	fan_CNT_Sta=idle;
   defrost_cyc_CNT_Sta=idle;
   defrost_CNT_Sta=idle;
   drip_CNT_Sta=idle;
-	
 	tube_CNT_Sta=idle;
-	
   Alarm_Blind_CNT_Sta=idle;
-  /****************Reserved for boot delay**********************/
 
+  house_temp_H_CNT_Sta=idle;
+  house_temp_L_CNT_Sta=idle;
+  
+  refri_temp_H_CNT_Sta=idle;					
+  refri_temp_L_CNT_Sta=idle;
+  /****************Reserved for boot delay**********************/
   HAL_TIM_Base_Start_IT(&htim2);
-	
+	Get_Data(boot_delay);
+  
+  if(CNT.boot_del_CNT_TRIG!=0){
+    Boot_CNT_Sta=running;
+    while(Boot_CNT_Sta==running){
+      HAL_Delay(10);
+      ;
+    }
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -171,18 +184,8 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-
   /* USER CODE BEGIN 3 */
-		Get_Data(Beta_of_NTC);	
-    Get_Data(EVP_Temp_offset);
-    Get_Data(House_Temp_offset);
-    Get_Data(Refri_Temp_offset);
-    Get_Data(EVP_Percent_offset);
-    Get_Data(House_Percent_offset);
-		Get_Data(Refri_Percent_offset);
-		HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 6);
-		HAL_ADC_Start(&hadc1);
-		
+    ADC_Read_Data();
 		
     IO_CHK_Routine();       //DO NOT EDIT
 
@@ -341,7 +344,7 @@ static void MX_USART1_UART_Init(void)
 {
 
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -431,6 +434,8 @@ void IO_CHK_Routine(void){
     IO_Status._Door=closed;
   }
   else if(IO_Status.Door==0){
+    CNT.door_open_del_CNT=0;
+    door_open_del_CNT_Sta=idle;
     IO_Status._Door=opened;
   }
 
@@ -546,14 +551,30 @@ void SRP_CHK_Routine(void){
     }else{
       A4_L;
     } 
+		if(defrost_cyc_CNT_Sta==End_Once){
+			if(defrost_CNT_Sta==End_Once||Temp.Read_EVAP_Temp_int>=Temp.defrost_temp_int){
+        A11_L;
+        
+        defrost_CNT_Sta=End_Once;
+        CNT.defrost_CNT=0;
 
-    if(defrost_CNT_Sta==End_Once||Temp.Read_EVAP_Temp_int>=Temp.defrost_temp_int){
-      A11_L;
-      
-      drip_CNT_Sta=running;
-    }    
+				drip_CNT_Sta=running;
+			} 		
+		}
   }
   
+}
+
+void ADC_Read_Data(void){
+  Get_Data(Beta_of_NTC);	
+  Get_Data(EVP_Temp_offset);
+  Get_Data(House_Temp_offset);
+  Get_Data(Refri_Temp_offset);
+  Get_Data(EVP_Percent_offset);
+  Get_Data(House_Percent_offset);
+  Get_Data(Refri_Percent_offset);
+  HAL_ADC_Start_DMA(&hadc1, ADC_Buf, 6);
+  HAL_ADC_Start(&hadc1);
 }
 
 void Get_Data(uint16_t addr){
@@ -627,7 +648,7 @@ void Get_Data(uint16_t addr){
   }else if(addr==tube_cooling_time){
     CNT.tube_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==boot_delay){
-    
+    CNT.boot_del_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==door_delay){
     CNT.door_open_del_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==Beta_of_NTC){

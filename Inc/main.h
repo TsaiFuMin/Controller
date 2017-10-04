@@ -145,6 +145,8 @@ typedef struct _timCNT      //Unit: Minute
   unsigned long cmp_alarm_blind_CNT;
   unsigned long cmp_alarm_blind_CNT_TRIG;
 
+  unsigned long boot_del_CNT;
+  unsigned long boot_del_CNT_TRIG;
 }timCNT_HandleTypeDef;
 
 typedef struct _temp
