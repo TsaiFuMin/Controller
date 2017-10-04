@@ -549,7 +549,7 @@ void SRP_CHK_Routine(void){
   }
 
   if(SRP_Routine_Sta==running_Fan){
-    if((fan_CNT_Sta==running||defrost_cyc_CNT_Sta!=End_Once)&&(!(Temp.Read_EVAP_Temp_int>=Temp.refrez_temp_int))){
+    if((fan_CNT_Sta==running||defrost_cyc_CNT_Sta!=End_Once)&&(!(Temp.Read_EVAP_Temp_int>=Temp.defrost_temp_int))){
       A4_H; //風冷??��??
             //If fan timer counter running
             //Or defrost cycle counter did not complete once.
@@ -565,7 +565,14 @@ void SRP_CHK_Routine(void){
 
 				drip_CNT_Sta=running;
 			} 		
-		}
+    }
+    if(fan_CNT_Sta==running){
+      if(Temp.Read_EVAP_Temp_int=>Temp.refrez_temp_int){
+        A7_L;
+      }else(Temp.Read_EVAP_Temp_int<Temp.refrez_temp_int){
+        A7_H;
+      }
+    }
   }
   
 }

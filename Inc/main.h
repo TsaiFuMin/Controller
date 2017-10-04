@@ -47,20 +47,20 @@
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-#define A3_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET)		//?? 
-#define A3_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET)	//??
-#define A4_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)		//??
-#define A4_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)	//??
-#define A5_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET)		//??
-#define A5_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET)	//??
-#define A6_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET)		//??????????
-#define A6_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET)	//??????????
-#define A7_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET)		//??????????
-#define A7_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET)	//??????????
-#define A8_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)		//????
-#define A8_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)	//????
-#define A11_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET)		//??????
-#define A11_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET)	//??????
+#define A3_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET)		//Tube_Cooling.....
+#define A3_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET)	//Tube_Cooling.....
+#define A4_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)		//Fan_Cooling.....
+#define A4_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)	//Fan_Cooling.....
+#define A5_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET)		//Alarm
+#define A5_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET)	//Alarm
+#define A6_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET)		//Refri_Fan.....
+#define A6_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET)	//Refri_Fan.....
+#define A7_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET)		//Refrz_Fan
+#define A7_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET)	//Refrz_Fan
+#define A8_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)		//Comp.....
+#define A8_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)	//Comp.....
+#define A11_H	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET)		//Defrost.....
+#define A11_L	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET)	//Defrost.....
 #define GPIO_B(num) HAL_GPIO_ReadPin(GPIOB, num)
 
 #define closed 0
