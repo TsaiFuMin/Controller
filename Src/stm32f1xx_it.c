@@ -279,7 +279,8 @@ void TIM2_IRQHandler(void)
     CNT.fan_CNT++;
     if(CNT.fan_CNT==CNT.fan_CNT_TRIG)
     {
-      A7_L;
+      
+      A4_L;
       CNT.fan_CNT=0;
       fan_CNT_Sta=End_Once; 
     }
@@ -359,10 +360,50 @@ void TIM2_IRQHandler(void)
     CNT.boot_del_CNT++;
     if(CNT.boot_del_CNT==CNT.boot_del_CNT_TRIG)
     {
-      CNT.boot_del_CNT_TRIG=0;
+      CNT.boot_del_CNT=0;
       Boot_CNT_Sta=idle;
     }    
-  } 
+  }
+  
+  if(house_temp_H_CNT_Sta==running)
+  {
+    CNT.house_temp_H_CNT++;
+    if(CNT.house_temp_H_CNT==CNT.house_temp_H_CNT_TRIG)
+    {
+      CNT.house_temp_H_CNT=0;
+      house_temp_H_CNT_Sta=idle;
+    }    
+  }
+
+  if(house_temp_L_CNT_Sta==running)
+  {
+    CNT.house_temp_L_CNT++;
+    if(CNT.house_temp_L_CNT==CNT.house_temp_L_CNT_TRIG)
+    {
+      CNT.house_temp_L_CNT=0;
+      house_temp_L_CNT_Sta=idle;
+    }    
+  }
+
+  if(refri_temp_H_CNT_Sta==running)
+  {
+    CNT.refri_temp_H_CNT++;
+    if(CNT.refri_temp_H_CNT==CNT.refri_temp_H_CNT_TRIG)
+    {
+      CNT.refri_temp_H_CNT=0;
+      refri_temp_H_CNT_Sta=idle;
+    }    
+  }
+
+  if(refri_temp_L_CNT_Sta==running)
+  {
+    CNT.refri_temp_L_CNT++;
+    if(CNT.refri_temp_L_CNT==CNT.refri_temp_L_CNT_TRIG)
+    {
+      CNT.refri_temp_L_CNT=0;
+      refri_temp_L_CNT_Sta=idle;
+    }    
+  }
   //*****USER FUNCTION END HERE*******
   //**********************************
   //**********************************

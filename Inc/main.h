@@ -69,6 +69,10 @@
 #define off 0
 #define on  1
 
+#define over  0
+#define lower 1
+#define norm  2
+
 #define house_temp                  0
 #define house_temp_error            15
 #define house_ALARM_OT_temp         30

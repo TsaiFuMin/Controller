@@ -107,12 +107,13 @@ static void MX_TIM2_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void ADC_Read_Data(void);
+void Temp_Alarm_CHK_Routine(void);
 void IO_CHK_Routine(void);
 void CMP_CHK_Routine(void); //Always run after "IO_CHK_Routine()"
 void Alarm_CHK_Routine(void);
 void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
-void ADC_Read_Data(void);
 void Get_Data(uint16_t addr);
 /* USER CODE END PFP */
 
@@ -160,12 +161,12 @@ int main(void)
   drip_CNT_Sta=idle;
 	tube_CNT_Sta=idle;
   Alarm_Blind_CNT_Sta=idle;
-
   house_temp_H_CNT_Sta=idle;
   house_temp_L_CNT_Sta=idle;
-  
   refri_temp_H_CNT_Sta=idle;					
   refri_temp_L_CNT_Sta=idle;
+
+  CMP._cmpsta=off;
   /****************Reserved for boot delay**********************/
   HAL_TIM_Base_Start_IT(&htim2);
 	Get_Data(boot_delay);
@@ -177,7 +178,7 @@ int main(void)
       ;
     }
   }
-
+  //A5_H;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -190,6 +191,7 @@ int main(void)
     ADC_Read_Data();
 		
     IO_CHK_Routine();       //DO NOT EDIT
+    Temp_Alarm_CHK_Routine();
 
     CMP_CHK_Routine();
 
@@ -346,7 +348,7 @@ static void MX_USART1_UART_Init(void)
 {
 
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -454,7 +456,7 @@ void CMP_CHK_Routine(void){
   alarm_sta=IO_Status.Comp_OVP&&IO_Status.LV&&IO_Status.HV&&IO_Status.Oil;
 
   //Temporary
-  Temp.Read_House_Temp_int=0;
+
   static uint8_t house_temp_cmp_sta;
   if(Temp.Read_House_Temp_int<Temp.house_temp_int){
     house_temp_cmp_sta=0; //0 = turn off comp
@@ -464,7 +466,7 @@ void CMP_CHK_Routine(void){
 
 	//SRP sta CHK
   uint8_t defrost_drip_cmp_sta;
-  if((defrost_CNT_Sta==running)||(defrost_CNT_Sta==End_Once)||(drip_CNT_Sta==running)||(drip_CNT_Sta==End_Once)){
+  if((defrost_CNT_Sta==running)||(drip_CNT_Sta==running)){
     defrost_drip_cmp_sta=0; //0 = turn off comp
   }else{
     defrost_drip_cmp_sta=1; //1 = turn on comp
@@ -497,7 +499,7 @@ void Refri_CHK_Routine(void){
   Get_Data(refri_temp_error);
   if(Temp.Read_Refri_Temp_int >= Temp.refri_temp_int){
     A6_H;
-  }else if(Temp.Read_Refri_Temp_int < Temp.refri_temp_error_int){
+  }else if(Temp.Read_Refri_Temp_int < (Temp.refri_temp_int+Temp.refri_temp_error_int)){
     A6_L;
   }
 
@@ -549,13 +551,19 @@ void SRP_CHK_Routine(void){
   }
 
   if(SRP_Routine_Sta==running_Fan){
-    if((fan_CNT_Sta==running||defrost_cyc_CNT_Sta!=End_Once)&&(!(Temp.Read_EVAP_Temp_int>=Temp.defrost_temp_int))){
-      A4_H; //風冷??��??
-            //If fan timer counter running
-            //Or defrost cycle counter did not complete once.
+
+    if(fan_CNT_Sta==running){
+      A4_H;
+      if(Temp.Read_EVAP_Temp_int>=Temp.refrez_temp_int){
+				A7_L;  
+      }else{
+        A7_H;
+      }
     }else{
       A4_L;
-    } 
+			A7_L;
+    }
+
 		if(defrost_cyc_CNT_Sta==End_Once){
 			if(defrost_CNT_Sta==End_Once||Temp.Read_EVAP_Temp_int>=Temp.defrost_temp_int){
         A11_L;
@@ -566,13 +574,7 @@ void SRP_CHK_Routine(void){
 				drip_CNT_Sta=running;
 			} 		
     }
-    if(fan_CNT_Sta==running){
-      if(Temp.Read_EVAP_Temp_int=>Temp.refrez_temp_int){
-        A7_L;
-      }else(Temp.Read_EVAP_Temp_int<Temp.refrez_temp_int){
-        A7_H;
-      }
-    }
+
   }
   
 }
@@ -684,6 +686,60 @@ void Get_Data(uint16_t addr){
 
 }
 
+void Temp_Alarm_CHK_Routine(void){
+
+  static uint8_t  house_alarm_sta,
+                  refri_alarm_sta;
+
+  Get_Data(house_ALARM_OT_temp);
+  Get_Data(house_ALARM_LT_temp);
+  Get_Data(refri_ALARM_OT_temp);
+  Get_Data(refri_ALARM_LT_temp);
+
+  if(Temp.Read_House_Temp_int>=Temp.house_alarm_OT_int){
+    if(house_alarm_sta!=over){
+      Get_Data(house_ALARM_OT_temp_delay);
+      house_temp_H_CNT_Sta=running;
+    }
+    house_alarm_sta=over;
+  }else if(Temp.Read_House_Temp_int<Temp.house_alarm_LT_int){
+    if(house_alarm_sta!=lower){
+      house_alarm_sta=lower;
+      Get_Data(house_ALARM_LT_temp_delay); 
+      house_temp_L_CNT_Sta=running;
+    }
+    house_temp_L_CNT_Sta=running;
+  }else{
+    CNT.house_temp_H_CNT=0;
+    CNT.house_temp_L_CNT=0;
+    house_temp_H_CNT_Sta=idle;
+    house_temp_L_CNT_Sta=idle;
+    house_alarm_sta=norm;
+  }
+
+  if(Temp.Read_Refri_Temp_int>=Temp.refri_alarm_OT_int){
+    if(refri_alarm_sta!=over){
+      refri_alarm_sta=over;
+      Get_Data(refri_ALARM_OT_temp_delay);  
+      refri_temp_H_CNT_Sta=running;
+    }
+    refri_temp_H_CNT_Sta=running;
+  }else if(Temp.Read_Refri_Temp_int<Temp.refri_alarm_LT_int){
+    if(refri_alarm_sta!=lower){
+      refri_alarm_sta=lower;
+      Get_Data(refri_ALARM_LT_temp_delay); 
+      refri_temp_L_CNT_Sta=running; 
+    }
+    refri_temp_L_CNT_Sta=running;
+  }else{
+    CNT.refri_temp_H_CNT=0;
+    CNT.refri_temp_L_CNT=0;
+    refri_temp_H_CNT_Sta=idle;
+    refri_temp_L_CNT_Sta=idle;
+    refri_alarm_sta=norm;
+  }
+}
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -693,8 +749,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
    */
   if(hadc->Instance==hadc1.Instance){
     
-		
-
     uint32_t ch[6];
     float ch1_val,ch2_val,ch3_val;
     float ch1_volt,ch2_volt,ch3_volt;
@@ -729,8 +783,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     ch3_Up_R_Volt=(float)3.3-ch3_volt;
 
     ch1_I=(ch1_Up_R_Volt/(float)1000.0)*NTC.Refri_Percent_offset_flt;
-    ch2_I=(ch2_Up_R_Volt/(float)1000.0)*NTC.EVP_Percent_offset_flt;
-    ch3_I=(ch3_Up_R_Volt/(float)1000.0)*NTC.House_Percent_offset_flt;
+    ch2_I=(ch2_Up_R_Volt/(float)10000.0)*NTC.EVP_Percent_offset_flt;
+    ch3_I=(ch3_Up_R_Volt/(float)10000.0)*NTC.House_Percent_offset_flt;
 
     ch1_R=ch1_volt/ch1_I;
     ch2_R=ch2_volt/ch2_I;
