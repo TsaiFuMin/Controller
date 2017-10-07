@@ -194,12 +194,12 @@ int main(void)
   house_temp_L_CNT_Sta=idle;
   refri_temp_H_CNT_Sta=idle;					
   refri_temp_L_CNT_Sta=idle;
-
   CMP._cmpsta=off;
   /****************Reserved for boot delay**********************/
   HAL_TIM_Base_Start_IT(&htim2);
-	Get_Data(boot_delay);
-  
+
+	UART_Get_All();
+  Get_Data(boot_delay);
   if(CNT.boot_del_CNT_TRIG!=0){
     Boot_CNT_Sta=running;
     while(Boot_CNT_Sta==running){
@@ -228,6 +228,7 @@ int main(void)
     Refri_CHK_Routine();
 
     SRP_CHK_Routine();
+		HAL_Delay(200);
 	}
 	
   /* USER CODE END 3 */
@@ -506,7 +507,8 @@ void CMP_CHK_Routine(void){
   if(   (alarm_sta||(Alarm_Blind_CNT_Sta==running))	&& \
         house_temp_cmp_sta                       		&& \
         door_open_del_CNT_Sta==idle              		&& \
-        defrost_drip_cmp_sta  ){
+        defrost_drip_cmp_sta                        && \
+        IO_Status.Door==1){
     if(CMP._cmpsta==off){
       CNT.cmp_alarm_blind_CNT_TRIG=5; //5 seconds
       Alarm_Blind_CNT_Sta=running;
