@@ -72,7 +72,7 @@ extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart1;
-
+extern uint16_t tick;
 /******************************************************************************/
 /*            Cortex-M3 Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
@@ -272,7 +272,8 @@ void TIM2_IRQHandler(void)
   //**********************************
   //**********************************
   //*****USER FUNCTION START HERE*****
-	static uint16_t tick;
+	
+	tick++;
 
   if(fan_CNT_Sta == running)
   {
