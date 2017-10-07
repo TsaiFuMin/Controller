@@ -85,6 +85,7 @@ CNT_Sta_HandleTypeDef
                   Boot_CNT_Sta;
 Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
+<<<<<<< HEAD
 
 char 		
         ___house_temp[5],
@@ -116,14 +117,19 @@ char
         ___House_Percent_offset[5],
         ___Refri_Percent_offset[5];
 
+=======
+unsigned char _rept[5]="rept ";
+>>>>>>> parent of 17a53e4... 2017/10/7-20:19
 unsigned char _null[3]={255,255,255};
-unsigned char req_all_message[10]="rept 0,420";
+unsigned char _leng[2]=",5";
 
 uint8_t rec_buf[420];
 uint32_t ADC_Buf[6];  //For ADC DMA
 
+#define cmd_rept HAL_UART_Transmit(&huart1, _rept, 5, 0xff)
+#define cmd_leng HAL_UART_Transmit(&huart1, _leng, 2, 0xff)
 #define cmd_end HAL_UART_Transmit(&huart1, _null, 3, 0xff)
-#define cmd_all_rept HAL_UART_Transmit(&huart1, req_all_message, 10, 0xff)                                               
+                                                    
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -144,7 +150,6 @@ void Alarm_CHK_Routine(void);
 void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
 void Get_Data(uint16_t addr);
-void UART_Get_All(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -218,9 +223,12 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+<<<<<<< HEAD
    
 		UART_Get_All();
 		/*
+=======
+>>>>>>> parent of 17a53e4... 2017/10/7-20:19
     ADC_Read_Data();
 		
     IO_CHK_Routine();       //DO NOT EDIT
@@ -628,7 +636,7 @@ void ADC_Read_Data(void){
 }
 
 void Get_Data(uint16_t addr){
-  /*
+  
   uint8_t len;
   if(addr<10){
     len=1;
@@ -648,76 +656,76 @@ void Get_Data(uint16_t addr){
 	
   uint8_t receive_buf[5];
   HAL_UART_Receive(&huart1, receive_buf,15, 0xff);
-  */
+  
   if(addr==house_temp){
-    Temp.house_temp_flt=atof((char*)___house_temp);
+    Temp.house_temp_flt=atof((char*)receive_buf);
     Temp.house_temp_int=(int16_t)(Temp.house_temp_flt*(float)10.0);
   }else if(addr==house_temp_error){
-    Temp.house_temp_error_flt=atof((char*)___house_temp_error);
+    Temp.house_temp_error_flt=atof((char*)receive_buf);
     Temp.house_temp_error_int=(int16_t)(Temp.house_temp_error_flt*(float)10.0);
   }else if(addr==house_ALARM_OT_temp){
-    Temp.house_alarm_OT_flt=atof((char*)___house_ALARM_OT_temp);
+    Temp.house_alarm_OT_flt=atof((char*)receive_buf);
     Temp.house_alarm_OT_int=(int16_t)(Temp.house_alarm_OT_flt*(float)10.0);
   }else if(addr==house_ALARM_LT_temp){
-    Temp.house_alarm_LT_flt=atof((char*)___house_ALARM_LT_temp);
+    Temp.house_alarm_LT_flt=atof((char*)receive_buf);
     Temp.house_alarm_LT_int=(int16_t)(Temp.house_alarm_LT_flt*(float)10.0);
   }else if(addr==house_ALARM_OT_temp_delay){
-    CNT.house_temp_H_CNT_TRIG=atol((char*)___house_ALARM_OT_temp_delay)*60;
+    CNT.house_temp_H_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==house_ALARM_LT_temp_delay){
-    CNT.house_temp_L_CNT_TRIG=atol((char*)___house_ALARM_LT_temp_delay)*60;
+    CNT.house_temp_L_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==refri_temp){
-    Temp.refri_temp_flt=atof((char*)___refri_temp);
+    Temp.refri_temp_flt=atof((char*)receive_buf);
     Temp.refri_temp_int=(int16_t)(Temp.refri_temp_flt*(float)10.0);
   }else if(addr==refri_temp_error){
-    Temp.refri_temp_error_flt=atof((char*)___refri_temp_error);
+    Temp.refri_temp_error_flt=atof((char*)receive_buf);
     Temp.refri_temp_error_int=(int16_t)(Temp.refri_temp_error_flt*(float)10.0);
   }else if(addr==refri_ALARM_OT_temp){
-    Temp.refri_alarm_OT_flt=atof((char*)___refri_ALARM_OT_temp);
+    Temp.refri_alarm_OT_flt=atof((char*)receive_buf);
     Temp.refri_alarm_OT_int=(int16_t)(Temp.refri_alarm_OT_flt*(float)10.0);
   }else if(addr==refri_ALARM_LT_temp){
-    Temp.refri_alarm_LT_flt=atof((char*)___refri_ALARM_LT_temp);
+    Temp.refri_alarm_LT_flt=atof((char*)receive_buf);
     Temp.refri_alarm_LT_int=(int16_t)(Temp.refri_alarm_LT_flt*(float)10.0);
   }else if(addr==refri_ALARM_OT_temp_delay){
-    CNT.refri_temp_H_CNT_TRIG=atol((char*)___refri_ALARM_OT_temp_delay)*60;
+    CNT.refri_temp_H_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==refri_ALARM_LT_temp_delay){
-    CNT.refri_temp_L_CNT_TRIG=atol((char*)___refri_ALARM_LT_temp_delay)*60;
+    CNT.refri_temp_L_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==defrost_cyc){
-    CNT.defrost_cyc_CNT_TRIG=atol((char*)___defrost_cyc)*60;
+    CNT.defrost_cyc_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==defrost_timer){
-    CNT.defrost_CNT_TRIG=atol((char*)___defrost_timer)*60;
+    CNT.defrost_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==defrost_temp){
-    Temp.defrost_temp_flt=atof((char*)___defrost_temp);
+    Temp.defrost_temp_flt=atof((char*)receive_buf);
     Temp.defrost_temp_int=(int16_t)(Temp.defrost_temp_flt*(float)10.0);
   }else if(addr==refrez_fan_temp){
-    Temp.refrez_temp_flt=atof((char*)___refrez_fan_temp);
+    Temp.refrez_temp_flt=atof((char*)receive_buf);
     Temp.refrez_temp_int=(int16_t)(Temp.refrez_temp_flt*(float)10.0);
   }else if(addr==fan_cooling_time){
-    CNT.fan_CNT_TRIG=atol((char*)___fan_cooling_time)*60;
+    CNT.fan_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==drip_time){
-    CNT.drip_CNT_TRIG=atol((char*)___drip_time)*60;
+    CNT.drip_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==tube_cooling_time){
-    CNT.tube_CNT_TRIG=atol((char*)___tube_cooling_time)*60;
+    CNT.tube_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==boot_delay){
-    CNT.boot_del_CNT_TRIG=atol((char*)___boot_delay)*60;
+    CNT.boot_del_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==door_delay){
-    CNT.door_open_del_CNT_TRIG=atol((char*)___door_delay)*60;
+    CNT.door_open_del_CNT_TRIG=atol((char*)receive_buf)*60;
   }else if(addr==Beta_of_NTC){
-    NTC.Beta=atol((char*)___Beta_of_NTC);
+    NTC.Beta=atol((char*)receive_buf);
   }else if(addr==EVP_Temp_offset){
-    NTC.EVP_Temp_offset_flt=atof((char*)___EVP_Temp_offset);
+    NTC.EVP_Temp_offset_flt=atof((char*)receive_buf);
     NTC.EVP_Temp_offset_int=(int16_t)(NTC.EVP_Temp_offset_flt*(float)10.0);
   }else if(addr==House_Temp_offset){
-    NTC.House_Temp_offset_flt=atof((char*)___House_Temp_offset);
+    NTC.House_Temp_offset_flt=atof((char*)receive_buf);
     NTC.House_Temp_offset_int=(int16_t)(NTC.House_Temp_offset_flt*(float)10.0);
   }else if(addr==Refri_Temp_offset){
-    NTC.Refri_Temp_offset_flt=atof((char*)___Refri_Temp_offset);
+    NTC.Refri_Temp_offset_flt=atof((char*)receive_buf);
     NTC.Refri_Temp_offset_int=(int16_t)(NTC.Refri_Temp_offset_flt*(float)10.0);
   }else if(addr==EVP_Percent_offset){
-    NTC.EVP_Percent_offset_flt=atof((char*)___EVP_Percent_offset)/(float)100.0;
+    NTC.EVP_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
   }else if(addr==House_Percent_offset){
-    NTC.House_Percent_offset_flt=atof((char*)___House_Percent_offset)/(float)100.0;
+    NTC.House_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
   }else if(addr==Refri_Percent_offset){
-    NTC.Refri_Percent_offset_flt=atof((char*)___Refri_Percent_offset)/(float)100.0;
+    NTC.Refri_Percent_offset_flt=atof((char*)receive_buf)/(float)100.0;
   }
 
 }
@@ -844,6 +852,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   }
 }
 
+<<<<<<< HEAD
 void UART_Get_All(void){
   
 
@@ -892,6 +901,8 @@ void UART_Get_All(void){
 		
 }
 
+=======
+>>>>>>> parent of 17a53e4... 2017/10/7-20:19
 /* USER CODE END 4 */
 
 /**
