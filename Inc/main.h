@@ -222,6 +222,8 @@ typedef struct _NTC_info
 
 }NTC_HandleTypeDef;
 
+
+
 /* USER CODE END Private defines */
 
 void _Error_Handler(char *, int);
