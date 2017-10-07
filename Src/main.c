@@ -87,39 +87,38 @@ Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
 
 char 		
-        ___house_temp[5],
-        ___house_temp_error[5],
-        ___house_ALARM_OT_temp[5],
-        ___house_ALARM_LT_temp[5],
-        ___house_ALARM_OT_temp_delay[5],
-        ___house_ALARM_LT_temp_delay[5],
-        ___refri_temp[5],
-        ___refri_temp_error[5],
-        ___refri_ALARM_OT_temp[5],
-        ___refri_ALARM_LT_temp[5],
-        ___refri_ALARM_OT_temp_delay[5],
-        ___refri_ALARM_LT_temp_delay[5],
-        ___defrost_cyc[5],
-        ___defrost_timer[5],
-        ___defrost_temp[5],
-        ___refrez_fan_temp[5],
-        ___fan_cooling_time[5],
-        ___drip_time[5],
-        ___tube_cooling_time[5],
-        ___boot_delay[5],
-        ___door_delay[5],
-        ___Beta_of_NTC[5],
-        ___EVP_Temp_offset[5],
-        ___House_Temp_offset[5],
-        ___Refri_Temp_offset[5],
-        ___EVP_Percent_offset[5],
-        ___House_Percent_offset[5],
-        ___Refri_Percent_offset[5];
+___house_temp[5],
+___house_temp_error[5],
+___house_ALARM_OT_temp[5],
+___house_ALARM_LT_temp[5],
+___house_ALARM_OT_temp_delay[5],
+___house_ALARM_LT_temp_delay[5],
+___refri_temp[5],
+___refri_temp_error[5],
+___refri_ALARM_OT_temp[5],
+___refri_ALARM_LT_temp[5],
+___refri_ALARM_OT_temp_delay[5],
+___refri_ALARM_LT_temp_delay[5],
+___defrost_cyc[5],
+___defrost_timer[5],
+___defrost_temp[5],
+___refrez_fan_temp[5],
+___fan_cooling_time[5],
+___drip_time[5],
+___tube_cooling_time[5],
+___boot_delay[5],
+___door_delay[5],
+___Beta_of_NTC[5],
+___EVP_Temp_offset[5],
+___House_Temp_offset[5],
+___Refri_Temp_offset[5],
+___EVP_Percent_offset[5],
+___House_Percent_offset[5],
+___Refri_Percent_offset[5];
 
 unsigned char _null[3]={255,255,255};
 unsigned char _leng[2]=",5";
 
-uint8_t rec_buf[420];
 uint32_t ADC_Buf[6];  //For ADC DMA
 
 #define cmd_rept HAL_UART_Transmit(&huart1, _rept, 5, 0xff)
@@ -199,8 +198,8 @@ int main(void)
   refri_temp_L_CNT_Sta=idle;
   CMP._cmpsta=off;
   /****************Reserved for boot delay**********************/
-	HAL_TIM_Base_Start_IT(&htim2);
-	HAL_Delay(1500);
+  HAL_TIM_Base_Start_IT(&htim2);
+
 	UART_Get_All();
   Get_Data(boot_delay);
   if(CNT.boot_del_CNT_TRIG!=0){
@@ -210,7 +209,7 @@ int main(void)
       ;
     }
   }
-  
+  //A5_H;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -220,9 +219,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-   
-		UART_Get_All();
-		/*
+    UART_Get_All();
     ADC_Read_Data();
 		
     IO_CHK_Routine();       //DO NOT EDIT
@@ -233,10 +230,9 @@ int main(void)
     Refri_CHK_Routine();
 
     SRP_CHK_Routine();
-		HAL_Delay(5);
-		*/
+		HAL_Delay(200);
 	}
-		
+	
   /* USER CODE END 3 */
 
 }
@@ -847,7 +843,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 }
 
 void UART_Get_All(void){
-  
+  uint8_t rec_buf[420];
 
   cmd_all_rept;
   cmd_end;

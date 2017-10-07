@@ -79,8 +79,8 @@
       </OPTFL>
       <CpuCode>18</CpuCode>
       <DebugOpt>
-        <uSim>1</uSim>
-        <uTrg>0</uTrg>
+        <uSim>0</uSim>
+        <uTrg>1</uTrg>
         <sLdApp>1</sLdApp>
         <sGomain>1</sGomain>
         <sRbreak>1</sRbreak>
@@ -156,9 +156,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>222</LineNumber>
+          <LineNumber>513</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134232850</Address>
+          <Address>134221958</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -167,14 +167,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Controller\../Src/main.c\222</Expression>
+          <Expression>\\Controller\../Src/main.c\513</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>200</LineNumber>
+          <LineNumber>203</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134232800</Address>
+          <Address>134234636</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -183,7 +183,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Controller\../Src/main.c\200</Expression>
+          <Expression>\\Controller\../Src/main.c\203</Expression>
         </Bp>
       </Breakpoint>
 =======
@@ -344,6 +344,16 @@
           <ItemText>CNT.door_open_del_CNT_TRIG,0x0A</ItemText>
 >>>>>>> parent of 17a53e4... 2017/10/7-20:19
         </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Temp.house_temp_int,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Temp.house_temp_error_int,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -381,6 +391,7 @@
           <WinNumber>2</WinNumber>
           <ItemText>CNT.tube_CNT_TRIG,0x0A</ItemText>
         </Ww>
+<<<<<<< HEAD
         <Ww>
 <<<<<<< HEAD
           <count>5</count>
@@ -492,6 +503,8 @@
           <ItemText>Temp.house_temp_int+Temp.house_temp_error_int,0x0A</ItemText>
 >>>>>>> parent of 17a53e4... 2017/10/7-20:19
         </Ww>
+=======
+>>>>>>> parent of fd86e4b... 2017/10/7-21:54
       </WatchWindow2>
       <MemoryWindow1>
         <Mm>
