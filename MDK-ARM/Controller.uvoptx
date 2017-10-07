@@ -79,8 +79,8 @@
       </OPTFL>
       <CpuCode>18</CpuCode>
       <DebugOpt>
-        <uSim>0</uSim>
-        <uTrg>1</uTrg>
+        <uSim>1</uSim>
+        <uTrg>0</uTrg>
         <sLdApp>1</sLdApp>
         <sGomain>1</sGomain>
         <sRbreak>1</sRbreak>
@@ -155,9 +155,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>513</LineNumber>
+          <LineNumber>222</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221958</Address>
+          <Address>134232850</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -166,14 +166,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Controller\../Src/main.c\513</Expression>
+          <Expression>\\Controller\../Src/main.c\222</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>203</LineNumber>
+          <LineNumber>200</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134234636</Address>
+          <Address>134232800</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -182,7 +182,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Controller\../Src/main.c\203</Expression>
+          <Expression>\\Controller\../Src/main.c\200</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -190,16 +190,6 @@
           <count>0</count>
           <WinNumber>1</WinNumber>
           <ItemText>Temp.Read_House_Temp_int,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>1</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Temp.house_temp_int,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Temp.house_temp_error_int,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -227,6 +217,11 @@
           <count>4</count>
           <WinNumber>2</WinNumber>
           <ItemText>CNT.tube_CNT_TRIG,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>CNT.tube_CNT_TRIG</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
