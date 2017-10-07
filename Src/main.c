@@ -85,7 +85,6 @@ CNT_Sta_HandleTypeDef
                   Boot_CNT_Sta;
 Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
-<<<<<<< HEAD
 
 char 		
         ___house_temp[5],
@@ -117,9 +116,6 @@ char
         ___House_Percent_offset[5],
         ___Refri_Percent_offset[5];
 
-=======
-unsigned char _rept[5]="rept ";
->>>>>>> parent of 17a53e4... 2017/10/7-20:19
 unsigned char _null[3]={255,255,255};
 unsigned char _leng[2]=",5";
 
@@ -150,6 +146,7 @@ void Alarm_CHK_Routine(void);
 void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
 void Get_Data(uint16_t addr);
+void UART_Get_All(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -223,12 +220,9 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-<<<<<<< HEAD
    
 		UART_Get_All();
 		/*
-=======
->>>>>>> parent of 17a53e4... 2017/10/7-20:19
     ADC_Read_Data();
 		
     IO_CHK_Routine();       //DO NOT EDIT
@@ -852,7 +846,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   }
 }
 
-<<<<<<< HEAD
 void UART_Get_All(void){
   
 
@@ -901,8 +894,6 @@ void UART_Get_All(void){
 		
 }
 
-=======
->>>>>>> parent of 17a53e4... 2017/10/7-20:19
 /* USER CODE END 4 */
 
 /**
