@@ -64,6 +64,9 @@ extern CNT_Sta_HandleTypeDef
                   Boot_CNT_Sta;
 extern Alarm_Blind_HandleTypeDef CMP;                  
 extern NTC_HandleTypeDef NTC;
+
+extern uint8_t House_Temp_Alarm_Sta;
+extern uint8_t Refri_Temp_Alarm_Sta;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -365,24 +368,32 @@ void TIM2_IRQHandler(void)
       Boot_CNT_Sta=idle;
     }    
   }
-  
+  //***************************************************//
+  //***************************************************//
+  //Alarm Over,Lower check 
   if(house_temp_H_CNT_Sta==running)
   {
+    House_Temp_Alarm_Sta=Not_Trig;
     CNT.house_temp_H_CNT++;
     if(CNT.house_temp_H_CNT==CNT.house_temp_H_CNT_TRIG)
     {
       CNT.house_temp_H_CNT=0;
       house_temp_H_CNT_Sta=idle;
+
+      House_Temp_Alarm_Sta
     }    
   }
 
   if(house_temp_L_CNT_Sta==running)
   {
+    House_Temp_Alarm_Sta=Not_Trig;
     CNT.house_temp_L_CNT++;
     if(CNT.house_temp_L_CNT==CNT.house_temp_L_CNT_TRIG)
     {
       CNT.house_temp_L_CNT=0;
       house_temp_L_CNT_Sta=idle;
+
+      House_Temp_Alarm_Sta=Trig;
     }    
   }
 
@@ -391,18 +402,24 @@ void TIM2_IRQHandler(void)
     CNT.refri_temp_H_CNT++;
     if(CNT.refri_temp_H_CNT==CNT.refri_temp_H_CNT_TRIG)
     {
+      Refri_Temp_Alarm_Sta=Not_Trig;
       CNT.refri_temp_H_CNT=0;
       refri_temp_H_CNT_Sta=idle;
+
+      Refri_Temp_Alarm_Sta=Trig;
     }    
   }
 
   if(refri_temp_L_CNT_Sta==running)
   {
+    Refri_Temp_Alarm_Sta=Not_Trig;
     CNT.refri_temp_L_CNT++;
     if(CNT.refri_temp_L_CNT==CNT.refri_temp_L_CNT_TRIG)
     {
       CNT.refri_temp_L_CNT=0;
       refri_temp_L_CNT_Sta=idle;
+
+      Refri_Temp_Alarm_Sta=Trig;
     }    
   }
   //*****USER FUNCTION END HERE*******

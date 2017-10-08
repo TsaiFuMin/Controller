@@ -87,41 +87,44 @@ Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
 
 char 		
-___house_temp[5],
-___house_temp_error[5],
-___house_ALARM_OT_temp[5],
-___house_ALARM_LT_temp[5],
-___house_ALARM_OT_temp_delay[5],
-___house_ALARM_LT_temp_delay[5],
-___refri_temp[5],
-___refri_temp_error[5],
-___refri_ALARM_OT_temp[5],
-___refri_ALARM_LT_temp[5],
-___refri_ALARM_OT_temp_delay[5],
-___refri_ALARM_LT_temp_delay[5],
-___defrost_cyc[5],
-___defrost_timer[5],
-___defrost_temp[5],
-___refrez_fan_temp[5],
-___fan_cooling_time[5],
-___drip_time[5],
-___tube_cooling_time[5],
-___boot_delay[5],
-___door_delay[5],
-___Beta_of_NTC[5],
-___EVP_Temp_offset[5],
-___House_Temp_offset[5],
-___Refri_Temp_offset[5],
-___EVP_Percent_offset[5],
-___House_Percent_offset[5],
-___Refri_Percent_offset[5];
+      ___house_temp[5],
+      ___house_temp_error[5],
+      ___house_ALARM_OT_temp[5],
+      ___house_ALARM_LT_temp[5],
+      ___house_ALARM_OT_temp_delay[5],
+      ___house_ALARM_LT_temp_delay[5],
+      ___refri_temp[5],
+      ___refri_temp_error[5],
+      ___refri_ALARM_OT_temp[5],
+      ___refri_ALARM_LT_temp[5],
+      ___refri_ALARM_OT_temp_delay[5],
+      ___refri_ALARM_LT_temp_delay[5],
+      ___defrost_cyc[5],
+      ___defrost_timer[5],
+      ___defrost_temp[5],
+      ___refrez_fan_temp[5],
+      ___fan_cooling_time[5],
+      ___drip_time[5],
+      ___tube_cooling_time[5],
+      ___boot_delay[5],
+      ___door_delay[5],
+      ___Beta_of_NTC[5],
+      ___EVP_Temp_offset[5],
+      ___House_Temp_offset[5],
+      ___Refri_Temp_offset[5],
+      ___EVP_Percent_offset[5],
+      ___House_Percent_offset[5],
+      ___Refri_Percent_offset[5];
+
+uint8_t House_Temp_Alarm_Sta;
+uint8_t Refri_Temp_Alarm_Sta;
 
 uint16_t tick;
+uint32_t ADC_Buf[6];  //For ADC DMA
 
 unsigned char _null[3]={255,255,255};
 unsigned char req_message[10]="rept 0,420";
 
-uint32_t ADC_Buf[6];  //For ADC DMA
 
 #define cmd_end HAL_UART_Transmit(&huart1, _null, 3, 0xff)
 #define cmd_all_rept HAL_UART_Transmit(&huart1, req_message, 10, 0xff)                         
@@ -146,6 +149,7 @@ void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
 void Get_Data(uint16_t addr);
 void UART_Get_All(void);
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -197,6 +201,8 @@ int main(void)
   refri_temp_H_CNT_Sta=idle;					
   refri_temp_L_CNT_Sta=idle;
   CMP._cmpsta=off;
+  House_Temp_Alarm_Sta=Not_Trig;
+  House_Temp_Alarm_Sta=Not_Trig;
   /****************Reserved for boot delay**********************/
   HAL_TIM_Base_Start_IT(&htim2);
 	UART_Get_All();
@@ -736,48 +742,71 @@ void Temp_Alarm_CHK_Routine(void){
   Get_Data(refri_ALARM_OT_temp);
   Get_Data(refri_ALARM_LT_temp);
 
+    
   if(Temp.Read_House_Temp_int>=Temp.house_alarm_OT_int){
     if(house_alarm_sta!=over){
+      CNT.house_temp_L_CNT=0;
+      house_temp_L_CNT_Sta=idle;
+
       Get_Data(house_ALARM_OT_temp_delay);
+      CNT.house_temp_H_CNT=0;
       house_temp_H_CNT_Sta=running;
     }
     house_alarm_sta=over;
   }else if(Temp.Read_House_Temp_int<Temp.house_alarm_LT_int){
     if(house_alarm_sta!=lower){
-      house_alarm_sta=lower;
+      CNT.house_temp_H_CNT=0;
+      house_temp_H_CNT_Sta=idle;
+
       Get_Data(house_ALARM_LT_temp_delay); 
+      CNT.house_temp_L_CNT=0;
       house_temp_L_CNT_Sta=running;
     }
-    house_temp_L_CNT_Sta=running;
+    house_alarm_sta=lower;
   }else{
     CNT.house_temp_H_CNT=0;
     CNT.house_temp_L_CNT=0;
     house_temp_H_CNT_Sta=idle;
     house_temp_L_CNT_Sta=idle;
     house_alarm_sta=norm;
+
+    House_Temp_Alarm_Sta=Not_Trig;
   }
 
   if(Temp.Read_Refri_Temp_int>=Temp.refri_alarm_OT_int){
     if(refri_alarm_sta!=over){
-      refri_alarm_sta=over;
+      CNT.refri_temp_L_CNT=0;
+      refri_temp_L_CNT_Sta=idle;
+
       Get_Data(refri_ALARM_OT_temp_delay);  
+      CNT.refri_temp_H_CNT=0;
       refri_temp_H_CNT_Sta=running;
     }
-    refri_temp_H_CNT_Sta=running;
+    refri_alarm_sta=over;
   }else if(Temp.Read_Refri_Temp_int<Temp.refri_alarm_LT_int){
     if(refri_alarm_sta!=lower){
-      refri_alarm_sta=lower;
+      CNT.refri_temp_H_CNT=0;
+      refri_temp_H_CNT_Sta=idle;
+
       Get_Data(refri_ALARM_LT_temp_delay); 
+      CNT.refri_temp_L_CNT=0;
       refri_temp_L_CNT_Sta=running; 
     }
-    refri_temp_L_CNT_Sta=running;
+    refri_alarm_sta=lower;
   }else{
     CNT.refri_temp_H_CNT=0;
     CNT.refri_temp_L_CNT=0;
     refri_temp_H_CNT_Sta=idle;
     refri_temp_L_CNT_Sta=idle;
     refri_alarm_sta=norm;
+
+    Refri_Temp_Alarm_Sta=Not_Trig;
   }
+
+}
+
+void Alarm_CHK_Routine(void){
+
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)

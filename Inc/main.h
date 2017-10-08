@@ -73,6 +73,10 @@
 #define lower 1
 #define norm  2
 
+#define Not_Trig 0
+#define Trig 1
+//Only for House_Temp_Alarm_Sta, Refri_Temp_Alarm_Sta;
+
 #define house_temp                  0
 #define house_temp_error            15
 #define house_ALARM_OT_temp         30
