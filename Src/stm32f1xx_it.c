@@ -61,7 +61,8 @@ extern CNT_Sta_HandleTypeDef
                   Alarm_Blind_CNT_Sta,
                   
                   SRP_Routine_Sta,
-                  Boot_CNT_Sta;
+                  Boot_CNT_Sta,
+									Tick_CNT_Sta;
 extern Alarm_Blind_HandleTypeDef CMP;                  
 extern NTC_HandleTypeDef NTC;
 
@@ -275,10 +276,17 @@ void TIM2_IRQHandler(void)
   //**********************************
   //**********************************
   //*****USER FUNCTION START HERE*****
-	
-	tick++;
+  if(Tick_CNT_Sta==running)
+  {
+    tick++;
+    if(tick==5)
+    {
+      tick=0;
+      Tick_CNT_Sta=End_Once;
+    }
+  }
 
-  if(fan_CNT_Sta == running)
+  if(fan_CNT_Sta==running)
   {
     CNT.fan_CNT++;
     if(CNT.fan_CNT==CNT.fan_CNT_TRIG)
@@ -380,7 +388,7 @@ void TIM2_IRQHandler(void)
       CNT.house_temp_H_CNT=0;
       house_temp_H_CNT_Sta=idle;
 
-      House_Temp_Alarm_Sta
+      House_Temp_Alarm_Sta=Trig;
     }    
   }
 

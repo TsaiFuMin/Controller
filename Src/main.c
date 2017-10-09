@@ -82,7 +82,9 @@ CNT_Sta_HandleTypeDef
                   Alarm_Blind_CNT_Sta,
 
                   SRP_Routine_Sta,
-                  Boot_CNT_Sta;
+                  Boot_CNT_Sta,
+                  Tick_CNT_Sta;
+
 Alarm_Blind_HandleTypeDef CMP;
 NTC_HandleTypeDef NTC;	
 
@@ -200,6 +202,7 @@ int main(void)
   house_temp_L_CNT_Sta=idle;
   refri_temp_H_CNT_Sta=idle;					
   refri_temp_L_CNT_Sta=idle;
+  Tick_CNT_Sta=idle;
   CMP._cmpsta=off;
   House_Temp_Alarm_Sta=Not_Trig;
   House_Temp_Alarm_Sta=Not_Trig;
@@ -215,6 +218,7 @@ int main(void)
     }
   }
   UART_Get_All();
+  Tick_CNT_Sta=running;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -224,24 +228,18 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-    if(tick>=5){
-			tick=0;
-			UART_Get_All();
-		}
-		
-//		HAL_Delay(1000);
+    if(Tick_CNT_Sta==End_Once){
+      UART_Get_All();
+      Tick_CNT_Sta=running;
+    }
 		
     ADC_Read_Data();
-		
     IO_CHK_Routine();       //DO NOT EDIT
     Temp_Alarm_CHK_Routine();
-
     CMP_CHK_Routine();
-
     Refri_CHK_Routine();
-
     SRP_CHK_Routine();
-		
+		Alarm_CHK_Routine();
 		
 	}
 	
@@ -806,7 +804,18 @@ void Temp_Alarm_CHK_Routine(void){
 }
 
 void Alarm_CHK_Routine(void){
-
+  uint8_t alarm_sta;
+  alarm_sta=IO_Status.HV&&\
+						IO_Status.LV&&\
+            IO_Status.Oil&&\
+            IO_Status.Comp_OVP&&\
+            House_Temp_Alarm_Sta!=Trig&&\
+            Refri_Temp_Alarm_Sta!=Trig;
+	if(!alarm_sta){
+		A5_H;
+	}else{
+		A5_L;
+	}
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
@@ -924,6 +933,8 @@ void UART_Get_All(void){
     memcpy(&___Refri_Percent_offset,&parsing_buf[135],5);
 		
 }
+
+
 
 /* USER CODE END 4 */
 
