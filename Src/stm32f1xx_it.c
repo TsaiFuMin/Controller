@@ -279,7 +279,7 @@ void TIM2_IRQHandler(void)
   if(Tick_CNT_Sta==running)
   {
     tick++;
-    if(tick==5)
+    if(tick==3)
     {
       tick=0;
       Tick_CNT_Sta=End_Once;

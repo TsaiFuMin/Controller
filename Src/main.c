@@ -151,7 +151,7 @@ void Refri_CHK_Routine(void);
 void SRP_CHK_Routine(void);
 void Get_Data(uint16_t addr);
 void UART_Get_All(void);
-
+void UART_Send_Data(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -231,8 +231,8 @@ int main(void)
     if(Tick_CNT_Sta==End_Once){
       UART_Get_All();
       Tick_CNT_Sta=running;
+			UART_Send_Data();
     }
-		
     ADC_Read_Data();
     IO_CHK_Routine();       //DO NOT EDIT
     Temp_Alarm_CHK_Routine();
@@ -240,7 +240,6 @@ int main(void)
     Refri_CHK_Routine();
     SRP_CHK_Routine();
 		Alarm_CHK_Routine();
-		
 	}
 	
   /* USER CODE END 3 */
@@ -934,7 +933,47 @@ void UART_Get_All(void){
 		
 }
 
+void UART_Send_Data(void){
+  char delimiter='"';
+  
+  unsigned char House_temp_buf[18];
+  unsigned char EVP_temp_buf[18];
+  unsigned char Refri_temp_buf[18];
 
+  uint8_t hou_buf_length;
+  if(Temp.Read_House_Temp_flt>0){
+    hou_buf_length=17;
+  }else{
+    hou_buf_length=18;
+  }
+
+  sprintf((char*)House_temp_buf,"sta.t3.txt=%c%.1f%c", delimiter, (Temp.Read_House_Temp_flt), delimiter);
+  HAL_UART_Transmit(&huart1, House_temp_buf, hou_buf_length,0xffff);
+  cmd_end;
+
+  uint8_t eva_buf_length;
+  if(Temp.Read_EVAP_Temp_flt>0){
+    eva_buf_length=17;
+  }else{
+    eva_buf_length=18;
+  }
+
+  sprintf((char*)EVP_temp_buf,"sta.t4.txt=%c%.1f%c", delimiter, (Temp.Read_EVAP_Temp_flt), delimiter);
+  HAL_UART_Transmit(&huart1, EVP_temp_buf, eva_buf_length,0xffff);
+  cmd_end;
+
+  uint8_t refri_buf_length;
+  if(Temp.Read_Refri_Temp_flt>0){
+    refri_buf_length=17;
+  }else{
+    refri_buf_length=18;
+  }
+
+  sprintf((char*)Refri_temp_buf,"sta.t5.txt=%c%.1f%c", delimiter, (Temp.Read_Refri_Temp_flt), delimiter);
+  HAL_UART_Transmit(&huart1, Refri_temp_buf, refri_buf_length,0xffff);
+  cmd_end;
+
+}
 
 /* USER CODE END 4 */
 
