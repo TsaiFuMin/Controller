@@ -973,6 +973,36 @@ void UART_Send_Data(void){
   HAL_UART_Transmit(&huart1, Refri_temp_buf, refri_buf_length,0xffff);
   cmd_end;
 
+
+  uint8_t oil_buf[16], hv_buf[16], lv_buf[16], comp_ovp[16];
+  uint8_t tub_buf[16], fan_buf[16], alarm_buf[16], refri_buf[16], refrez_buf[16], comp_buf[16], defrost_buf[17];
+  
+  sprintf((char*)oil_buf, "sta.va0.txt=%c%i%c", delimiter, IO_Status.Oil, delimiter);
+  sprintf((char*)hv_buf, "sta.va1.txt=%c%i%c", delimiter, IO_Status.HV, delimiter);
+  sprintf((char*)lv_buf, "sta.va2.txt=%c%i%c", delimiter, IO_Status.LV, delimiter);
+  sprintf((char*)comp_ovp, "sta.va3.txt=%c%i%c", delimiter, IO_Status.Comp_OVP, delimiter);
+
+  sprintf((char*)tub_buf,"sta.va4.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3),delimiter);
+  sprintf((char*)fan_buf,"sta.va5.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4),delimiter);
+  sprintf((char*)alarm_buf,"sta.va6.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5),delimiter);
+  sprintf((char*)refri_buf,"sta.va7.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6),delimiter);
+  sprintf((char*)refrez_buf,"sta.va8.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7),delimiter);
+  sprintf((char*)comp_buf,"sta.va9.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8),delimiter);
+  sprintf((char*)defrost_buf,"sta.va10.txt=%c%i%c",delimiter,HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11),delimiter);
+
+  HAL_UART_Transmit(&huart1, oil_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, hv_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, lv_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, comp_ovp, 15,0xffff);cmd_end;
+
+  HAL_UART_Transmit(&huart1, tub_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, fan_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, alarm_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, refri_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, refrez_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, comp_buf, 15,0xffff);cmd_end;
+  HAL_UART_Transmit(&huart1, defrost_buf, 16,0xffff);cmd_end;
+
 }
 
 /* USER CODE END 4 */
